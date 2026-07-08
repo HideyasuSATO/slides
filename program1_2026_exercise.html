@@ -1117,15 +1117,16 @@ margin-right: 0; }
 <span id="cb2-4"><a href></a>  <span class="fu">mutate</span>(総売上階級 <span class="ot">=</span> <span class="fu">case_when</span>(</span>
 <span id="cb2-5"><a href></a>    総売上 <span class="sc">&gt;=</span> <span class="fl">1.1</span><span class="sc">*</span><span class="fu">mean</span>(総売上) <span class="sc">~</span> <span class="dv">3</span>,</span>
 <span id="cb2-6"><a href></a>    総売上 <span class="sc">&gt;=</span> <span class="fu">mean</span>(総売上) <span class="sc">~</span> <span class="dv">2</span>,</span>
-<span id="cb2-7"><a href></a>    総売上 <span class="sc">&gt;=</span> <span class="fl">0.9</span><span class="sc">*</span><span class="fu">mean</span>(総売上) <span class="sc">~</span> <span class="dv">3</span>,</span>
+<span id="cb2-7"><a href></a>    総売上 <span class="sc">&gt;=</span> <span class="fl">0.9</span><span class="sc">*</span><span class="fu">mean</span>(総売上) <span class="sc">~</span> <span class="dv">1</span>,</span>
 <span id="cb2-8"><a href></a>    <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">0</span>)</span>
 <span id="cb2-9"><a href></a>    ) <span class="sc">%&gt;%</span> </span>
 <span id="cb2-10"><a href></a>  <span class="fu">summarise</span>(客単価平均 <span class="ot">=</span> <span class="fu">mean</span>(客単価),</span>
 <span id="cb2-11"><a href></a>            客数平均 <span class="ot">=</span> <span class="fu">mean</span>(客数),</span>
-<span id="cb2-12"><a href></a>            <span class="at">.by =</span> 曜日) <span class="sc">%&gt;%</span> </span>
-<span id="cb2-13"><a href></a>  <span class="fu">arrange</span>(総売上階級)</span>
-<span id="cb2-14"><a href></a></span>
-<span id="cb2-15"><a href></a><span class="co">#客数の欠損行も削除しておくべきだが，今回は総売り上げが欠損していれば客数も欠損していることを知っているので省略</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-12"><a href></a>            <span class="at">.by =</span> <span class="st">&quot;総売上階級&quot;</span></span>
+<span id="cb2-13"><a href></a>            ) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-14"><a href></a>  <span class="fu">arrange</span>(総売上階級)</span>
+<span id="cb2-15"><a href></a></span>
+<span id="cb2-16"><a href></a><span class="co">#客数の欠損行も削除しておくべきだが，今回は総売り上げが欠損していれば客数も欠損していることを知っているので省略</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="第11回問題" class="slide level2">
