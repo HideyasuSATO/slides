@@ -1068,6 +1068,228 @@ margin-right: 0; }
 </div>
 
 </section>
+<section id="第11回問題" class="slide level2">
+<h2><strong>第11回問題</strong></h2>
+<p><code>df</code>のデータを用いて，「客数」の月曜日の平均値と「客数」の火曜日の平均値をそれぞれアトミックベクトルとして抽出し，その値を比較せよ．</p>
+</section>
+<section class="slide level2">
+
+<h3 id="方針">方針</h3>
+<ol type="1">
+<li><p><code>filter</code>で「客数」の<code>NA</code>を削除</p></li>
+<li><p><code>mutate</code>で「曜日」の列を追加</p></li>
+<li><p><code>filter</code>で「Monday」を抽出</p></li>
+<li><p><code>summarise</code>で平均を計算したデータフレームをゲット</p></li>
+<li><p>4をアトミックベクトルとして抽出</p></li>
+</ol>
+<p>※火曜日も上の方法と同様</p>
+<p>ただし，3で月曜日を<code>filter</code>するときは，<code>filter(データフレーム名, 曜日 == &quot;Monday&quot;)</code>のように==を使うことでその曜日に等しいという条件に合致する場合の行を判定し抽出できることに注意する．</p>
+</section>
+<section class="slide level2">
+
+<h3 id="解答例">解答例</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href></a><span class="co">#tidyverseパッケージは読込済とする</span></span>
+<span id="cb1-2"><a href></a><span class="co">#syokudo_data2のエクセルは読込済とする</span></span>
+<span id="cb1-3"><a href></a></span>
+<span id="cb1-4"><a href></a><span class="co">#客数の月曜日平均</span></span>
+<span id="cb1-5"><a href></a>df1 <span class="ot">&lt;-</span> <span class="fu">filter</span>(df, 客数 <span class="sc">&gt;</span> <span class="dv">0</span>)</span>
+<span id="cb1-6"><a href></a>df2 <span class="ot">&lt;-</span> <span class="fu">mutate</span>(df1, 曜日 <span class="ot">=</span> <span class="fu">weekdays</span>(日付))</span>
+<span id="cb1-7"><a href></a>df3 <span class="ot">&lt;-</span> <span class="fu">filter</span>(df2, 曜日 <span class="sc">==</span> <span class="st">&quot;Monday&quot;</span>)</span>
+<span id="cb1-8"><a href></a>df4 <span class="ot">&lt;-</span> <span class="fu">summarise</span>(df3, 客数平均 <span class="ot">=</span> <span class="fu">mean</span>(客数))</span>
+<span id="cb1-9"><a href></a>mean_monday <span class="ot">&lt;-</span> df4<span class="sc">$</span>客数平均</span>
+<span id="cb1-10"><a href></a></span>
+<span id="cb1-11"><a href></a><span class="co">#客数の火曜日平均</span></span>
+<span id="cb1-12"><a href></a>df5 <span class="ot">&lt;-</span> <span class="fu">filter</span>(df2, 曜日 <span class="sc">==</span> <span class="st">&quot;Tuesday&quot;</span>)</span>
+<span id="cb1-13"><a href></a>df6 <span class="ot">&lt;-</span> <span class="fu">summarise</span>(df5, 客数平均 <span class="ot">=</span> <span class="fu">mean</span>(客数))</span>
+<span id="cb1-14"><a href></a>mean_tuesday <span class="ot">&lt;-</span> df6<span class="sc">$</span>客数平均</span>
+<span id="cb1-15"><a href></a></span>
+<span id="cb1-16"><a href></a><span class="co">#客数平均の比較例</span></span>
+<span id="cb1-17"><a href></a>mean_monday <span class="sc">/</span> mean_tuesday</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="第10回問題" class="slide level2">
+<h2>第10回問題</h2>
+<p><code>df</code>から「日付」，「総売上」，「販売点数」，「客数」，の列のみを抽出し，<code>df_ensyuu</code>という名前にデータフレームとして保存せよ．</p>
+</section>
+<section class="slide level2">
+
+<h3 id="解答例-1">解答例</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href></a><span class="co">#tidyverseパッケージは読込済とする</span></span>
+<span id="cb2-2"><a href></a><span class="co">#syokudo_data1のエクセルは読込済とする</span></span>
+<span id="cb2-3"><a href></a></span>
+<span id="cb2-4"><a href></a>df_ensyuu <span class="ot">&lt;-</span> <span class="fu">select</span>(df,</span>
+<span id="cb2-5"><a href></a>                    日付, 総売上, 販売点数, 客数)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="第９回問題" class="slide level2">
+<h2>第９回問題</h2>
+<p>2026年6月1日（月）～5日（金）までの朝霞キャンパス食堂の売上額sales，客数n_customers，客単価price_customersデータが日付順にそれぞれ以下のようにアトミックベクトルとして保存されている．ただし，6月3日（水）は台風のためデータはなし．</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href></a>sales <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">199530</span>, <span class="dv">181070</span>, <span class="dv">157430</span>, <span class="dv">175390</span>)</span>
+<span id="cb3-2"><a href></a>n_customers <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">328</span>, <span class="dv">298</span>, <span class="dv">248</span>, <span class="dv">279</span>)</span>
+<span id="cb3-3"><a href></a>price_customers <span class="ot">&lt;-</span> sales <span class="sc">/</span> n_customers</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ol type="1">
+<li><p>これらを１つのデータフレームとして保存せよ．</p></li>
+<li><p>アクセッサーを用いて客単価の列を抽出せよ．</p></li>
+<li><p>火曜日の客単価のみを抽出せよ．</p></li>
+</ol>
+</section>
+<section class="slide level2">
+
+<h3 id="解答例-2">解答例</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href></a><span class="co">#問題文のコードは実行済みとする</span></span>
+<span id="cb4-2"><a href></a></span>
+<span id="cb4-3"><a href></a><span class="co">#データフレームに保存</span></span>
+<span id="cb4-4"><a href></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(sales, n_customers, price_customers )</span>
+<span id="cb4-5"><a href></a><span class="co">#客単価の列抽出</span></span>
+<span id="cb4-6"><a href></a>df<span class="sc">$</span>price_customers</span>
+<span id="cb4-7"><a href></a><span class="co">#火曜日の客単価のみ抽出(2コ目が火曜日であることは既知)</span></span>
+<span id="cb4-8"><a href></a>df<span class="sc">$</span>price_customers[<span class="dv">2</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="第８回問題１" class="slide level2">
+<h2>第８回問題１</h2>
+<p>３つの企業についてそれぞれ，①企業名，➁企業の利潤，③食品企業か否か，のデータがアトミックベクトルとして保存されている．</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href></a>firm_name <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;企業A&quot;</span>, <span class="st">&quot;企業B&quot;</span>, <span class="st">&quot;企業C&quot;</span>)</span>
+<span id="cb5-2"><a href></a>profit <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">200</span>, <span class="dv">500</span>)</span>
+<span id="cb5-3"><a href></a>food_firm <span class="ot">&lt;-</span> <span class="fu">c</span>(T, F, T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ol type="1">
+<li><p>企業名について，食品企業のもののみをアトミックベクトルとして抽出せよ</p></li>
+<li><p>利潤について，食品企業のもののみをアトミックベクトルとして抽出せよ</p></li>
+</ol>
+</section>
+<section class="slide level2">
+
+<h3 id="解答例１">解答例１</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href></a><span class="co">#問題文のコードは実行済みとする</span></span>
+<span id="cb6-2"><a href></a></span>
+<span id="cb6-3"><a href></a><span class="co">#食品企業の企業名をアトミックベクトルで抽出</span></span>
+<span id="cb6-4"><a href></a>firm_name[food_firm]</span>
+<span id="cb6-5"><a href></a><span class="co">#食品企業の利潤をアトミックベクトルで抽出</span></span>
+<span id="cb6-6"><a href></a>profit[food_firm]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="第８回問題２" class="slide level2">
+<h2>第８回問題２</h2>
+<p>以下のコードを実行した場合，何が返るか予想せよ．</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href></a>example1 <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="cn">TRUE</span>, <span class="fl">2.4</span>, <span class="fu">list</span>(<span class="dv">10</span>, <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">1000</span>)))</span>
+<span id="cb7-2"><a href></a>example1[[<span class="dv">3</span>]][[<span class="dv">2</span>]][<span class="dv">2</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section class="slide level2">
+
+<h3 id="解答例２">解答例２</h3>
+<p>example1[[3]]は，list(10, c(100, 1000))を意味し，</p>
+<p>example1[[3]][[2]]は，c(100, 1000)を意味し，</p>
+<p>example1[[3]][[2]][2]は，1000を意味する．</p>
+<p>∴アトミックベクトルで1000が返る．</p>
+</section>
+<section id="第７回問題" class="slide level2">
+<h2>第７回問題</h2>
+<p>10人の出身都道府県は以下のとおりである．</p>
+<p>東京都，沖縄県，大阪府，東京都，東京都，</p>
+<p>北海道，福岡県，大阪府，青森県，福岡県</p>
+<p>それぞれの都道府県を横軸，該当する都道府県の人数を縦軸とした棒グラフを作成せよ．</p>
+<p>ただし，横軸の順番は「<a href="https://news.mynavi.jp/article/20220715-2399569/">全国地方公共団体コード</a>」の昇順とする．</p>
+</section>
+<section class="slide level2">
+
+<h3 id="解答例-3">解答例</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href></a>pref <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;東京都&quot;</span>, </span>
+<span id="cb8-2"><a href></a>          <span class="st">&quot;沖縄県&quot;</span>, </span>
+<span id="cb8-3"><a href></a>          <span class="st">&quot;大阪府&quot;</span>, </span>
+<span id="cb8-4"><a href></a>          <span class="st">&quot;東京都&quot;</span>, </span>
+<span id="cb8-5"><a href></a>          <span class="st">&quot;東京都&quot;</span>, </span>
+<span id="cb8-6"><a href></a>          <span class="st">&quot;北海道&quot;</span>, </span>
+<span id="cb8-7"><a href></a>          <span class="st">&quot;福岡県&quot;</span>, </span>
+<span id="cb8-8"><a href></a>          <span class="st">&quot;大阪府&quot;</span>, </span>
+<span id="cb8-9"><a href></a>          <span class="st">&quot;青森県&quot;</span>, </span>
+<span id="cb8-10"><a href></a>          <span class="st">&quot;福岡県&quot;</span>)</span>
+<span id="cb8-11"><a href></a>pref_factor <span class="ot">&lt;-</span> <span class="fu">factor</span>(pref, </span>
+<span id="cb8-12"><a href></a>                      <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;北海道&quot;</span>,</span>
+<span id="cb8-13"><a href></a>                                 <span class="st">&quot;青森県&quot;</span>,</span>
+<span id="cb8-14"><a href></a>                                 <span class="st">&quot;東京都&quot;</span>,</span>
+<span id="cb8-15"><a href></a>                                 <span class="st">&quot;大阪府&quot;</span>,</span>
+<span id="cb8-16"><a href></a>                                 <span class="st">&quot;福岡県&quot;</span>,</span>
+<span id="cb8-17"><a href></a>                                 <span class="st">&quot;沖縄県&quot;</span>)</span>
+<span id="cb8-18"><a href></a>                      )</span>
+<span id="cb8-19"><a href></a>counts_pref <span class="ot">&lt;-</span> <span class="fu">table</span>(pref_factor)</span>
+<span id="cb8-20"><a href></a><span class="fu">barplot</span>(counts_pref)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="第６回問題1" class="slide level2">
+<h2>第６回問題1</h2>
+<p><a href="https://www.ja-town.com/shop/f/f3020/">JAタウン</a>では産地直送でお米の販売を行っている．</p>
+<p>現在，5kgの精米について，「栃木県産とちほのか」，「福井県産いちほまれ」，「滋賀県産みずかがみ」の価格はそれぞれ，6,310円，5,800円，5,100円である．</p>
+<p>価格データを，名前を付した長さ３のnumericのアトミックベクトルrice_pricesとして保存せよ．ただし，名前はそれぞれ上記の産地と銘柄名の組み合わせとする．</p>
+</section>
+<section class="slide level2">
+
+<h3 id="解答例１-1">解答例１</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href></a>rice_prices <span class="ot">&lt;-</span> <span class="fu">c</span>(栃木県産とちほのか <span class="ot">=</span> <span class="dv">6310</span>,</span>
+<span id="cb9-2"><a href></a>                 福井県産いちほまれ <span class="ot">=</span> <span class="dv">5800</span>,</span>
+<span id="cb9-3"><a href></a>                 滋賀県産みずかがみ <span class="ot">=</span> <span class="dv">5100</span>)</span>
+<span id="cb9-4"><a href></a></span>
+<span id="cb9-5"><a href></a><span class="co">#別解1</span></span>
+<span id="cb9-6"><a href></a>meigara <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;栃木県産とちほのか&quot;</span>,</span>
+<span id="cb9-7"><a href></a>             <span class="st">&quot;福井県産いちほまれ&quot;</span>,</span>
+<span id="cb9-8"><a href></a>             <span class="st">&quot;滋賀県産みずかがみ&quot;</span>)</span>
+<span id="cb9-9"><a href></a>rice_prices <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">6310</span>, <span class="dv">5800</span>, <span class="dv">5100</span>)</span>
+<span id="cb9-10"><a href></a><span class="fu">names</span>(rice_prices) <span class="ot">&lt;-</span> meigara</span>
+<span id="cb9-11"><a href></a></span>
+<span id="cb9-12"><a href></a><span class="co">#別解2</span></span>
+<span id="cb9-13"><a href></a>meigara <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;栃木県産とちほのか&quot;</span>,</span>
+<span id="cb9-14"><a href></a>             <span class="st">&quot;福井県産いちほまれ&quot;</span>,</span>
+<span id="cb9-15"><a href></a>             <span class="st">&quot;滋賀県産みずかがみ&quot;</span>)</span>
+<span id="cb9-16"><a href></a>kakaku <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">6310</span>, <span class="dv">5800</span>, <span class="dv">5100</span>)</span>
+<span id="cb9-17"><a href></a>rice_prices <span class="ot">&lt;-</span> <span class="fu">setNames</span>(kakaku, meigara)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="第６回問題２" class="slide level2">
+<h2>第６回問題２</h2>
+<p>2026年4月の学食における定食の売上額は「鶏のから揚げ定食」が最も高く，次に「シン・チキン南蛮定食」，その次に「半熟オムライス　デミグラスソース」であり，順に537080円, 392840円, 231840円であった．</p>
+<p>販売数でみると，「鶏のから揚げ定食」が926, 「シン・チキン南蛮定食」が644, 「半熟オムライス　デミグラスソース」が368だった．</p>
+<p>行名を商品名，列名を「売上額」，「販売数」とした3行2列の行列データgakusyokuを作成せよ．ただし，行における商品の順番は問わず自由とする．</p>
+</section>
+<section class="slide level2">
+
+<h3 id="方針-1">方針</h3>
+<p>アトミックベクトルにデータを格納し，行列に変換し，行名・列名をつける．</p>
+<p>完成図：</p>
+
+<img role="img" data-src="data:image/png;base64,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" class="r-stretch"></section>
+<section class="slide level2">
+
+<h3 id="解答例２-1">解答例２</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href></a>mat <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">537080</span>, <span class="dv">392840</span>, <span class="dv">231840</span>,</span>
+<span id="cb10-2"><a href></a>         <span class="dv">926</span>, <span class="dv">644</span>, <span class="dv">368</span>)</span>
+<span id="cb10-3"><a href></a><span class="fu">dim</span>(mat) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">2</span>)</span>
+<span id="cb10-4"><a href></a><span class="fu">colnames</span>(mat) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;売上額&quot;</span>, <span class="st">&quot;販売数&quot;</span>)</span>
+<span id="cb10-5"><a href></a><span class="fu">rownames</span>(mat) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;鶏のから揚げ定食&quot;</span>,</span>
+<span id="cb10-6"><a href></a>                   <span class="st">&quot;シン・チキン南蛮定食&quot;</span>,</span>
+<span id="cb10-7"><a href></a>                   <span class="st">&quot;半熟オムライス　デミグラスソース&quot;</span>)</span>
+<span id="cb10-8"><a href></a></span>
+<span id="cb10-9"><a href></a><span class="co">#別解</span></span>
+<span id="cb10-10"><a href></a>vec <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">537080</span>, <span class="dv">392840</span>, <span class="dv">231840</span>,</span>
+<span id="cb10-11"><a href></a>         <span class="dv">926</span>, <span class="dv">644</span>, <span class="dv">368</span>)</span>
+<span id="cb10-12"><a href></a>mat <span class="ot">&lt;-</span> <span class="fu">matrix</span>(vec, <span class="at">nrow =</span> <span class="dv">3</span>, <span class="at">ncol =</span> <span class="dv">2</span>)</span>
+<span id="cb10-13"><a href></a><span class="fu">colnames</span>(mat) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;売上額&quot;</span>, <span class="st">&quot;販売数&quot;</span>)</span>
+<span id="cb10-14"><a href></a><span class="fu">rownames</span>(mat) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;鶏のから揚げ定食&quot;</span>,</span>
+<span id="cb10-15"><a href></a>                   <span class="st">&quot;シン・チキン南蛮定食&quot;</span>, </span>
+<span id="cb10-16"><a href></a>                   <span class="st">&quot;半熟オムライス　デミグラスソース&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
 <section id="第５回問題" class="slide level2">
 <h2>第５回問題</h2>
 <p>以下の４つの市販のチョコレートについて，示されている順番に「商品名」をcharacterとしてまとめた長さ４のアトミックベクトルchoco_namesと，「カロリー」をnumericとしてまとめた長さ４のアトミックベクトルcalsをそれぞれ生成し，それらを長さ２のリストchoco_lisとして保存せよ．ただし，カロリーはインターネットで検索し調べること．</p>
@@ -1080,14 +1302,14 @@ margin-right: 0; }
 </section>
 <section class="slide level2">
 
-<h3 id="解答例">解答例</h3>
+<h3 id="解答例-4">解答例</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href></a>choco_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;明治ミルクチョコレート 50g&quot;</span>,</span>
-<span id="cb1-2"><a href></a>                 <span class="st">&quot;明治ブラックチョコレート 50g&quot;</span>,</span>
-<span id="cb1-3"><a href></a>                 <span class="st">&quot;ロッテ ガーナミルクチョコレート 50g&quot;</span>,</span>
-<span id="cb1-4"><a href></a>                 <span class="st">&quot;ロッテ ガーナブラック 50g&quot;</span>)</span>
-<span id="cb1-5"><a href></a>cals <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">283</span>, <span class="dv">288</span>, <span class="dv">278</span>, <span class="dv">287</span>)</span>
-<span id="cb1-6"><a href></a>choco_lis <span class="ot">&lt;-</span> <span class="fu">list</span>(choco_names, cals)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href></a>choco_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;明治ミルクチョコレート 50g&quot;</span>,</span>
+<span id="cb11-2"><a href></a>                 <span class="st">&quot;明治ブラックチョコレート 50g&quot;</span>,</span>
+<span id="cb11-3"><a href></a>                 <span class="st">&quot;ロッテ ガーナミルクチョコレート 50g&quot;</span>,</span>
+<span id="cb11-4"><a href></a>                 <span class="st">&quot;ロッテ ガーナブラック 50g&quot;</span>)</span>
+<span id="cb11-5"><a href></a>cals <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">283</span>, <span class="dv">288</span>, <span class="dv">278</span>, <span class="dv">287</span>)</span>
+<span id="cb11-6"><a href></a>choco_lis <span class="ot">&lt;-</span> <span class="fu">list</span>(choco_names, cals)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="第４回問題１" class="slide level2">
@@ -1108,11 +1330,11 @@ margin-right: 0; }
 </section>
 <section class="slide level2">
 
-<h3 id="解答例１">解答例１</h3>
+<h3 id="解答例１-2">解答例１</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href></a>height <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">1.72</span>, <span class="fl">1.52</span>, <span class="fl">1.68</span>)</span>
-<span id="cb2-2"><a href></a>weight <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">66</span>, <span class="dv">57</span>, <span class="dv">65</span>)</span>
-<span id="cb2-3"><a href></a>BMI <span class="ot">&lt;-</span> weight<span class="sc">/</span>height<span class="sc">^</span><span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href></a>height <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">1.72</span>, <span class="fl">1.52</span>, <span class="fl">1.68</span>)</span>
+<span id="cb12-2"><a href></a>weight <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">66</span>, <span class="dv">57</span>, <span class="dv">65</span>)</span>
+<span id="cb12-3"><a href></a>BMI <span class="ot">&lt;-</span> weight<span class="sc">/</span>height<span class="sc">^</span><span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="第４回問題２" class="slide level2">
@@ -1127,7 +1349,7 @@ margin-right: 0; }
 </section>
 <section class="slide level2">
 
-<h3 id="解答例２">解答例２</h3>
+<h3 id="解答例２-2">解答例２</h3>
 <p>アトミックベクトルでは同一の型へ「型の強制変換」が生じ，柔軟性の高い型へと統一される．柔軟性は，</p>
 <p>論理（logi） &lt; 整数（int） &lt; 倍精度小数点（num） &lt; 文字（chr）</p>
 <p>なので，答えは順にnum, chr, chr, intとなる．最後の問いは，計算時にT, Fが1L, 0Lとより柔軟性の高い整数へ変換され整数同士の計算となる．</p>
@@ -1148,9 +1370,9 @@ margin-right: 0; }
 </section>
 <section class="slide level2">
 
-<h3 id="解答例-1">解答例</h3>
+<h3 id="解答例-5">解答例</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href></a>(<span class="dv">1</span> <span class="sc">+</span> <span class="fu">sqrt</span>(<span class="dv">5</span>))<span class="sc">/</span><span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href></a>(<span class="dv">1</span> <span class="sc">+</span> <span class="fu">sqrt</span>(<span class="dv">5</span>))<span class="sc">/</span><span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 </section>
